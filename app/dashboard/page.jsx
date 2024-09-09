@@ -1,11 +1,9 @@
 import React from "react";
-import { UserButton } from "@clerk/nextjs";
 
 const Dashboard = () => {
     return (
-        <div className="bg-neutral-950">
+        <div >
             Dashboard Page
-            <UserButton />
         </div>
     );
 };
