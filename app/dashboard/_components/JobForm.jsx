@@ -10,17 +10,37 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { chatSession } from "@/utils/geminiModel";
 
 const JobForm = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [jobPosition, setJobPosition] = useState("");
     const [jobDescription, setJobDescription] = useState("");
     const [experience, setExperience] = useState("");
+    const [questions, setQuestions] = useState({});
+    const [loading, setLoading] = useState(false);
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
-        console.log(jobPosition, jobDescription, experience);
+
+        const inputPrompt = `Job Position: ${jobPosition}, Job Description: ${jobDescription}, experience(in years): ${experience}. Based on these attributes generate 5 interview questions which are up to date to industry standards, no need of placeholders in answer. The JSON fields will be question, answer and reference link of the answer`;
+
+        try {
+            setLoading(true);
+            const result = await chatSession.sendMessage(inputPrompt);
+            setQuestions(result.response.text());
+            console.log(questions);
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        } finally {
+            console.error();
+            setLoading(false);
+        }
+
+        console.log(loading);
     };
+
 
     return (
         <div>
