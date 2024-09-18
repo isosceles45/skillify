@@ -11,13 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { chatSession } from "@/utils/geminiModel";
+import { LoaderPinwheel } from "lucide-react";
 
 const JobForm = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [jobPosition, setJobPosition] = useState("");
     const [jobDescription, setJobDescription] = useState("");
     const [experience, setExperience] = useState("");
-    const [questions, setQuestions] = useState({});
+    const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const onSubmit = async (e) => {
@@ -28,8 +29,8 @@ const JobForm = () => {
         try {
             setLoading(true);
             const result = await chatSession.sendMessage(inputPrompt);
-            setQuestions(result.response.text());
-            console.log(questions);
+            const questionsMock = JSON.parse(result.response.text());
+            setQuestions(questionsMock);
         } catch (error) {
             console.error(error);
             setLoading(false);
@@ -37,10 +38,7 @@ const JobForm = () => {
             console.error();
             setLoading(false);
         }
-
-        console.log(loading);
     };
-
 
     return (
         <div>
@@ -118,9 +116,14 @@ const JobForm = () => {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-base rounded-md"
+                                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-base rounded-md w-40 flex items-center justify-center"
+                                        disabled={loading}
                                     >
-                                        Start Interview
+                                        {loading ? (
+                                            <LoaderPinwheel className="animate-spin h-5 w-5" />
+                                        ) : (
+                                            "Start Interview"
+                                        )}
                                     </button>
                                 </div>
                             </form>
