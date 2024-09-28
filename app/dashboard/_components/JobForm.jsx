@@ -12,6 +12,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { chatSession } from "@/utils/geminiModel";
 import { LoaderPinwheel } from "lucide-react";
+import { db } from "@/utils/db";
+import { mockInterview } from "@/utils/schema";
+import { v4 as uuidv4 } from "uuid";
+import { useUser } from "@clerk/nextjs";
+import moment from "moment";
+import { useRouter } from "next/navigation";
 
 const JobForm = () => {
     const [openDialog, setOpenDialog] = useState(false);
@@ -20,6 +26,9 @@ const JobForm = () => {
     const [experience, setExperience] = useState("");
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { user } = useUser();
+
+    const router = useRouter();
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -31,6 +40,27 @@ const JobForm = () => {
             const result = await chatSession.sendMessage(inputPrompt);
             const questionsMock = JSON.parse(result.response.text());
             setQuestions(questionsMock);
+
+            if (result) {
+                const resp = await db
+                    .insert(mockInterview)
+                    .values({
+                        mockId: uuidv4(),
+                        mockResponse: questionsMock,
+                        jobRole: jobPosition,
+                        jobDesc: jobDescription,
+                        jobExp: experience,
+                        createdBy: user.primaryEmailAddress.emailAddress,
+                        createdAt: moment().format("DD-MM-YYYY"),
+                    })
+                    .returning({ mockId: mockInterview.mockId });
+                if(resp) {
+                    setOpenDialog(false);
+                    router.push("/dashboard/interview/" +resp[0]?.mockId);
+                }
+            } else {
+                console.error("Error fetching data!");
+            }
         } catch (error) {
             console.error(error);
             setLoading(false);
