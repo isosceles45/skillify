@@ -3,9 +3,9 @@ import Header from "./_components/Header";
 
 const DashboardLayout = ({ children }) => {
     return (
-        <div className="bg-neutral-900 min-h-screen">
+        <div className="bg-neutral-900 min-h-screen flex flex-col">
             <Header />
-            <div className="mx-5 md:mx-20 lg:mx-36">{children}</div>
+            <div className="flex-grow mx-5 md:mx-20 lg:mx-36">{children}</div>
         </div>
     );
 };

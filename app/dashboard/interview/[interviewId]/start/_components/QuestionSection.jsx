@@ -28,19 +28,17 @@ const QuestionSection = ({
                 {interviewQuestions &&
                     interviewQuestions[activeQuestionIndex]?.question}
             </h2>
-            <div className="p-4 mt-16 border rounded-lg border-emerald-600 bg-emerald-900">
-                <h2 className="flex gap-2 items-center font-semibold text-emerald-200">
-                    <strong>
-                        <LightbulbIcon />
-                    </strong>
-                    Information
-                </h2>
-                <h2 className="flex flex-col items-center text-emerald-300 mt-2">
-                    Click on Record Answer when you want to answer the question.
-                    At the end of interview we will give you the feedback along
-                    with correct answer for each of question and your answer to
-                    comapre it.
-                </h2>
+            <div className="p-2 mt-10 border rounded-lg border-emerald-600 bg-emerald-900">
+                <div className="flex items-center gap-2 text-sm font-semibold text-emerald-200">
+                    <LightbulbIcon className="h-4 w-4" />
+                    <span>Information</span>
+                </div>
+                <p className="mt-2 text-sm text-emerald-300">
+                    Click on "Record Answer" when you're ready to answer the
+                    question. After the interview, you'll receive feedback along
+                    with the correct answers for each question to compare with
+                    your responses.
+                </p>
             </div>
         </div>
     );

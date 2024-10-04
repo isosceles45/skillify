@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import QuestionSection from "./_components/QuestionSection";
+import RecordAnswerSection from "./_components/RecordAnswerSection";
 
 const StartInterview = ({ params }) => {
     const [interviewData, setInterviewData] = useState();
@@ -27,8 +28,10 @@ const StartInterview = ({ params }) => {
 
     return (
         <div>
-            <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-10">
                 {/* Questions */}
+
+                <RecordAnswerSection />
 
                 <QuestionSection
                     interviewQuestions={interviewQuestions}
