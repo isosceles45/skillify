@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { chatSession } from "@/utils/geminiModel";
-import { LoaderPinwheel } from "lucide-react";
+import { LoaderPinwheel, Plus } from "lucide-react";
 import { db } from "@/utils/db";
 import { mockInterview } from "@/utils/schema";
 import { v4 as uuidv4 } from "uuid";
@@ -27,7 +27,6 @@ const JobForm = () => {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
     const { user } = useUser();
-
     const router = useRouter();
 
     const onSubmit = async (e) => {
@@ -54,9 +53,9 @@ const JobForm = () => {
                         createdAt: moment().format("DD-MM-YYYY"),
                     })
                     .returning({ mockId: mockInterview.mockId });
-                if(resp) {
+                if (resp) {
                     setOpenDialog(false);
-                    router.push("/dashboard/interview/" +resp[0]?.mockId);
+                    router.push("/dashboard/interview/" + resp[0]?.mockId);
                 }
             } else {
                 console.error("Error fetching data!");
@@ -74,91 +73,100 @@ const JobForm = () => {
         <div>
             <div
                 onClick={() => setOpenDialog(true)}
-                className="p-8 rounded-lg bg-neutral-800 hover:scale-105 hover:shadow-sm hover:shadow-neutral-700 transition-all cursor-pointer"
+                className="p-8 rounded-lg bg-neutral-900 border-2 border-dashed border-neutral-700 hover:border-emerald-500/50 hover:bg-neutral-800 transition-all cursor-pointer group"
             >
-                <h2 className="text-gray-100 text-center text-lg">+ Add New</h2>
+                <div className="flex flex-col items-center gap-2">
+                    <Plus className="h-8 w-8 text-neutral-400 group-hover:text-emerald-500 transition-colors" />
+                    <h2 className="text-neutral-300 group-hover:text-neutral-50 transition-colors text-lg font-medium">
+                        Create New Interview
+                    </h2>
+                </div>
             </div>
 
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                <DialogContent className="max-w-xl">
-                    <DialogHeader>
-                        <DialogTitle className="text-xl">
-                            Tell us more about the job you are interviewing
+                <DialogContent className="max-w-xl bg-neutral-900 border-neutral-700">
+                    <DialogHeader className="space-y-2">
+                        <DialogTitle className="text-2xl text-neutral-50">
+                            Create AI Mock Interview
                         </DialogTitle>
-                        <DialogDescription className="space-y-4">
-                            <form className="space-y-5" onSubmit={onSubmit}>
-                                <div className="text-base text-gray-600">
-                                    Add details about the job position, your
-                                    skills, and years of experience
-                                </div>
-                                <div>
-                                    <label className="block text-base mb-1 font-medium text-gray-700">
-                                        Job Position/Role name
-                                    </label>
-                                    <Input
-                                        value={jobPosition}
-                                        onChange={(e) =>
-                                            setJobPosition(e.target.value)
-                                        }
-                                        placeholder="Enter Job Role"
-                                        required
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-base mb-1 font-medium text-gray-700">
-                                        Job Description / Tech Stack in Short
-                                    </label>
-                                    <Textarea
-                                        value={jobDescription}
-                                        onChange={(e) =>
-                                            setJobDescription(e.target.value)
-                                        }
-                                        placeholder="Describe the role in brief"
-                                        rows={3}
-                                        required
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-base mb-1 font-medium text-gray-700">
-                                        No of Years Experience
-                                    </label>
-                                    <Input
-                                        value={experience}
-                                        onChange={(e) =>
-                                            setExperience(e.target.value)
-                                        }
-                                        placeholder="Enter years of experience"
-                                        type="number"
-                                        max={50}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-5">
-                                    <button
-                                        type="button"
-                                        onClick={() => setOpenDialog(false)}
-                                        className="px-4 py-2 border border-emerald-700 hover:bg-gray-100 text-emerald-700 text-base rounded-md"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-base rounded-md w-40 flex items-center justify-center"
-                                        disabled={loading}
-                                    >
-                                        {loading ? (
-                                            <LoaderPinwheel className="animate-spin h-5 w-5" />
-                                        ) : (
-                                            "Start Interview"
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
+                        <DialogDescription className="text-neutral-400 text-base">
+                            Add details about the job position and your
+                            experience to generate relevant interview questions.
                         </DialogDescription>
                     </DialogHeader>
+
+                    <form className="space-y-6 mt-4" onSubmit={onSubmit}>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-1.5 text-neutral-200">
+                                    Job Position/Role
+                                </label>
+                                <Input
+                                    value={jobPosition}
+                                    onChange={(e) =>
+                                        setJobPosition(e.target.value)
+                                    }
+                                    placeholder="e.g. Senior Frontend Developer"
+                                    className="bg-neutral-800 border-neutral-700 text-neutral-100 placeholder:text-neutral-500 focus:ring-emerald-500 focus:border-emerald-500"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1.5 text-neutral-200">
+                                    Job Description / Tech Stack
+                                </label>
+                                <Textarea
+                                    value={jobDescription}
+                                    onChange={(e) =>
+                                        setJobDescription(e.target.value)
+                                    }
+                                    placeholder="Describe the role requirements and tech stack"
+                                    className="bg-neutral-800 border-neutral-700 text-neutral-100 placeholder:text-neutral-500 focus:ring-emerald-500 focus:border-emerald-500"
+                                    rows={3}
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1.5 text-neutral-200">
+                                    Years of Experience
+                                </label>
+                                <Input
+                                    value={experience}
+                                    onChange={(e) =>
+                                        setExperience(e.target.value)
+                                    }
+                                    placeholder="Enter years of experience"
+                                    type="number"
+                                    max={50}
+                                    className="bg-neutral-800 border-neutral-700 text-neutral-100 placeholder:text-neutral-500 focus:ring-emerald-500 focus:border-emerald-500"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                type="button"
+                                onClick={() => setOpenDialog(false)}
+                                className="px-4 py-2 border border-neutral-700 hover:bg-neutral-800 text-neutral-300 hover:text-neutral-100 text-sm font-medium rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg w-40 flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <LoaderPinwheel className="animate-spin h-5 w-5" />
+                                ) : (
+                                    "Start Interview"
+                                )}
+                            </button>
+                        </div>
+                    </form>
                 </DialogContent>
             </Dialog>
         </div>
