@@ -34,23 +34,19 @@ const StartInterview = ({ params }) => {
 
             setInterviewData(res[0]);
 
-            // Safely parse JSON with error handling
             try {
                 const mockResponse = res[0]?.mockResponse;
 
-                // If it's already an array, use it directly
                 if (Array.isArray(mockResponse)) {
                     setInterviewQuestions(mockResponse);
                     return;
                 }
 
-                // If it's a string, try to parse it
                 if (typeof mockResponse === "string") {
                     let parsedQuestions;
                     try {
                         parsedQuestions = JSON.parse(mockResponse);
                     } catch (e) {
-                        // If regular parse fails, try cleaning the string
                         const cleanedResponse = mockResponse.replace(
                             /([{,]\s*)([a-zA-Z0-9_]+)\s*:/g,
                             '$1"$2":'
@@ -58,7 +54,6 @@ const StartInterview = ({ params }) => {
                         parsedQuestions = JSON.parse(cleanedResponse);
                     }
 
-                    // Handle different possible structures
                     if (Array.isArray(parsedQuestions)) {
                         setInterviewQuestions(parsedQuestions);
                     } else if (parsedQuestions.interview_questions) {
@@ -68,7 +63,6 @@ const StartInterview = ({ params }) => {
                     } else if (parsedQuestions.questions) {
                         setInterviewQuestions(parsedQuestions.questions);
                     } else {
-                        // Convert object to array if needed
                         const questionsArray = Object.values(
                             parsedQuestions
                         ).filter(
@@ -104,9 +98,9 @@ const StartInterview = ({ params }) => {
     if (loading) {
         return (
             <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3 bg-neutral-900 p-6 rounded-lg border border-neutral-700">
-                    <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-                    <p className="text-neutral-400">
+                <div className="flex flex-col items-center gap-4 bg-neutral-900 p-8 rounded-lg border border-neutral-700">
+                    <Loader2 className="h-10 w-10 animate-spin text-emerald-500" />
+                    <p className="text-neutral-400 text-lg">
                         Preparing your interview questions...
                     </p>
                 </div>
@@ -117,11 +111,11 @@ const StartInterview = ({ params }) => {
     if (error) {
         return (
             <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
-                <div className="bg-neutral-900 p-6 rounded-lg border border-neutral-700 text-center space-y-3">
-                    <p className="text-red-400 font-medium">{error}</p>
+                <div className="bg-neutral-900 p-8 rounded-lg border border-neutral-700 text-center space-y-4">
+                    <p className="text-red-400 font-medium text-lg">{error}</p>
                     <button
                         onClick={getInterviewDetails}
-                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors"
+                        className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
                     >
                         Try Again
                     </button>
@@ -131,27 +125,35 @@ const StartInterview = ({ params }) => {
     }
 
     return (
-        <div className="min-h-screen bg-neutral-900 p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+        <div className="min-h-screen bg-neutral-900 p-6 lg:p-8">
+            <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
-                <div className="bg-neutral-900 rounded-lg border border-neutral-700 p-6">
-                    <h1 className="text-2xl font-bold text-neutral-50 mb-2">
+                <div className="bg-neutral-900 rounded-xl border border-neutral-700 p-8 shadow-lg">
+                    <h3 className="text-lg md:text-3xl font-bold text-neutral-50 mb-4">
                         {interviewData?.jobRole} Interview
-                    </h1>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-neutral-400">
-                        <p>Experience Level: {interviewData?.jobExp} years</p>
-                        <p>Created: {interviewData?.createdAt}</p>
+                    </h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8 text-neutral-400">
+                        <p className="flex items-center">
+                            <span className="font-medium mr-2">
+                                Experience Level:
+                            </span>
+                            {interviewData?.jobExp} years
+                        </p>
+                        <p className="flex items-center">
+                            <span className="font-medium mr-2">Created:</span>
+                            {interviewData?.createdAt}
+                        </p>
                     </div>
                 </div>
 
-                                {/* Progress Indicator */}
-                                <div className="bg-neutral-900 rounded-lg border border-neutral-700 p-4">
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-neutral-400">
+                {/* Progress Indicator */}
+                <div className="bg-neutral-900 rounded-xl border border-neutral-700 p-6 shadow-lg">
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-neutral-400 font-medium">
                             Question {activeQuestionIndex + 1} of{" "}
                             {interviewQuestions?.length || 0}
                         </span>
-                        <span className="text-emerald-500 font-medium">
+                        <span className="text-emerald-500 font-semibold">
                             {Math.round(
                                 ((activeQuestionIndex + 1) /
                                     (interviewQuestions?.length || 1)) *
@@ -160,9 +162,9 @@ const StartInterview = ({ params }) => {
                             % Complete
                         </span>
                     </div>
-                    <div className="mt-2 h-2 bg-neutral-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-emerald-500 transition-all duration-300"
+                            className="h-full bg-emerald-500 transition-all duration-300 rounded-full"
                             style={{
                                 width: `${
                                     ((activeQuestionIndex + 1) /
@@ -175,14 +177,14 @@ const StartInterview = ({ params }) => {
                 </div>
 
                 {/* Main Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Recording Section */}
-                    <div className="bg-neutral-900 rounded-lg border border-neutral-700 p-6 h-fit">
+                    <div className="bg-neutral-900 rounded-xl border border-neutral-700 p-8 shadow-lg h-fit">
                         <RecordAnswerSection />
                     </div>
 
                     {/* Questions Section */}
-                    <div className="bg-neutral-900 rounded-lg border border-neutral-700 p-6">
+                    <div className="bg-neutral-900 rounded-xl border border-neutral-700 p-8 shadow-lg">
                         <QuestionSection
                             interviewQuestions={interviewQuestions}
                             activeQuestionIndex={activeQuestionIndex}
